@@ -36,6 +36,9 @@ echo '#!/bin/sh
 startxfce4' > /etc/xrdp/startwm.sh
 chmod +x /etc/xrdp/startwm.sh
 
+# disable sleep
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
 # Restart XRDP service
 systemctl restart xrdp
 
