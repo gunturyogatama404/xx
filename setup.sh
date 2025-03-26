@@ -47,6 +47,13 @@ chmod +x /etc/xrdp/startwm.sh
 # Nonaktifkan mode sleep agar sistem tetap aktif
 systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
+# Konfigurasi swapfile
+fallocate -l 4G /swapfile 
+chmod 600 /swapfile 
+mkswap /swapfile 
+swapon /swapfile 
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
 # Restart layanan XRDP
 systemctl restart xrdp
 
