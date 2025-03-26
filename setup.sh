@@ -25,7 +25,15 @@ rm -f uprock.deb
 apt autoremove -y
 
 # Konfigurasi firewall
-ufw allow 3389/tcp
+ufw allow 3389/tcp  # Izinkan XRDP
+ufw allow OpenSSH    # Pastikan SSH tetap bisa diakses
+
+# Aktifkan UFW hanya jika SSH sudah diizinkan
+if ! ufw status | grep -q "22/tcp"; then
+    echo "Menambahkan aturan firewall untuk SSH..."
+    ufw allow 22/tcp
+fi
+
 ufw enable
 
 # Pastikan direktori xrdp ada
@@ -36,10 +44,11 @@ echo '#!/bin/sh
 startxfce4' > /etc/xrdp/startwm.sh
 chmod +x /etc/xrdp/startwm.sh
 
-# disable sleep
-sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+# Nonaktifkan mode sleep agar sistem tetap aktif
+systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 
-# Restart XRDP service
+# Restart layanan XRDP
 systemctl restart xrdp
 
 echo "Setup selesai. Anda bisa terhubung ke XRDP di port 3389."
+echo "Akses SSH tetap tersedia di port 22."
